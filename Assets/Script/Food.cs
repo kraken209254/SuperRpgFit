@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour
+public class Food : MonoBehaviour
 {
     public Slider hungerBar;
     public Slider thirstBar;
@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public Button submitWaterButton;
     public GameObject hungerPopupPanel;
     public GameObject thirstPopupPanel;
+    public Button submitFoodAndIngredientsButton; // New button for submitting food and ingredients
 
     private const float reductionAmount = 0.3f;
     private const float ingredientIncreaseAmount = 0.06f;
@@ -26,11 +27,14 @@ public class GameManager : MonoBehaviour
     private bool isHungerFull = false;
     private bool isThirstFull = false;
     private bool hasSubmittedFood = false;
+    private bool isFoodInputFrozen = false;
+    private string currentFood = "";
     private int ingredientCount = 0;
+    private DateTime currentDateTime;
+    private DateTime currentDay;
 
     private void Start()
     {
-        // Set up button click listeners
         submitFoodButton.onClick.AddListener(SubmitFoodInput);
 
         for (int i = 0; i < submitIngredientButtons.Length; i++)
@@ -41,29 +45,32 @@ public class GameManager : MonoBehaviour
 
         submitWaterButton.onClick.AddListener(SubmitWaterInput);
 
-        // Set initial hunger and thirst levels
         hungerBar.value = hungerLevel;
         thirstBar.value = thirstLevel;
+
+        UpdateCurrentDay();
+
+        submitFoodAndIngredientsButton.onClick.AddListener(SubmitFoodAndIngredientsInput); // Add listener for new button
     }
 
     private void Update()
     {
         // Track real-time and reduce hunger and thirst levels accordingly
-        DateTime currentTime = DateTime.Now;
-        ReduceLevelsAtSpecifiedTimes(currentTime);
+        currentDateTime = DateTime.Now;
+        ReduceLevelsAtSpecifiedTimes();
     }
 
-    private void ReduceLevelsAtSpecifiedTimes(DateTime currentTime)
+    private void ReduceLevelsAtSpecifiedTimes()
     {
-        if (currentTime.Hour == 9 && currentTime.Minute == 0)
+        if (currentDateTime.Hour == 9 && currentDateTime.Minute == 0)
         {
             ReduceHungerAndThirstLevels();
         }
-        else if (currentTime.Hour == 14 && currentTime.Minute == 0)
+        else if (currentDateTime.Hour == 14 && currentDateTime.Minute == 0)
         {
             ReduceHungerAndThirstLevels();
         }
-        else if (currentTime.Hour == 20 && currentTime.Minute == 0)
+        else if (currentDateTime.Hour == 20 && currentDateTime.Minute == 0)
         {
             ReduceHungerAndThirstLevels();
         }
@@ -71,27 +78,29 @@ public class GameManager : MonoBehaviour
 
     private void ReduceHungerAndThirstLevels()
     {
-        hungerLevel -= reductionAmount;
-        thirstLevel -= reductionAmount;
-        UpdateHungerAndThirstBars();
+        float reductionAmountPerHour = 0.1f;
 
-        if (hungerLevel <= 0)
+        hungerLevel -= reductionAmountPerHour;
+        thirstLevel -= reductionAmountPerHour;
+
+        if (hungerLevel <= 0f)
         {
-            hungerLevel = 0;
+            hungerLevel = 0f;
             DisplayHungerPopup();
         }
 
-        if (thirstLevel <= 0)
+        if (thirstLevel <= 0f)
         {
-            thirstLevel = 0;
+            thirstLevel = 0f;
             DisplayThirstPopup();
         }
+
+        UpdateHungerAndThirstBars();
     }
 
-    private void UpdateHungerAndThirstBars()
+    private void UpdateCurrentDay()
     {
-        hungerBar.value = hungerLevel;
-        thirstBar.value = thirstLevel;
+        currentDay = currentDateTime.Date;
     }
 
     private void SubmitFoodInput()
@@ -101,8 +110,10 @@ public class GameManager : MonoBehaviour
         if (!string.IsNullOrEmpty(food))
         {
             hasSubmittedFood = true;
+            currentFood = food;
             ingredientCount = 0;
             IncreaseHungerLevel();
+            isFoodInputFrozen = true;
             ClearFoodInputField();
             ClearIngredientInputFields();
         }
@@ -117,27 +128,44 @@ public class GameManager : MonoBehaviour
             IncreaseHungerLevel();
             ClearIngredientInputField(index);
             ingredientCount++;
+
+            if (ingredientCount >= 4)
+            {
+                hasSubmittedFood = false;
+                ClearFoodInputField();
+            }
         }
     }
 
     private void SubmitWaterInput()
     {
-        float waterAmount = float.Parse(waterInputField.text);
-
-        if (waterAmount > 0)
+        float waterAmount;
+        if (float.TryParse(waterInputField.text, out waterAmount))
         {
-            float waterIncrease = (waterAmount / requiredWaterAmount) * ingredientIncreaseAmount * 5;
-            thirstLevel += waterIncrease;
-
-            if (thirstLevel >= 1f)
+            if (waterAmount <= 500f)
             {
-                thirstLevel = 1f;
-                DisplayThirstPopup();
-            }
+                float waterIncrease = (waterAmount / requiredWaterAmount) * reductionAmount;
+                thirstLevel += waterIncrease;
 
-            UpdateHungerAndThirstBars();
-            ClearWaterInputField();
+                if (thirstLevel >= 1f)
+                {
+                    thirstLevel = 1f;
+                    DisplayThirstPopup();
+                }
+
+                UpdateHungerAndThirstBars();
+            }
+            else
+            {
+                // Handle value exceeding the limit (e.g., show an error message)
+            }
         }
+        else
+        {
+            // Handle invalid input (non-numeric or empty)
+        }
+
+        waterInputField.text = "";
     }
 
     private void IncreaseHungerLevel()
@@ -172,11 +200,6 @@ public class GameManager : MonoBehaviour
         ingredientInputFields[index].text = "";
     }
 
-    private void ClearWaterInputField()
-    {
-        waterInputField.text = "";
-    }
-
     private void DisplayHungerPopup()
     {
         hungerPopupPanel.SetActive(true);
@@ -198,5 +221,45 @@ public class GameManager : MonoBehaviour
     {
         thirstPopupPanel.SetActive(false);
     }
-}
 
+    private void UpdateHungerAndThirstBars()
+    {
+        hungerBar.value = hungerLevel;
+        thirstBar.value = thirstLevel;
+    }
+
+    private void SubmitFoodAndIngredientsInput()
+    {
+        if (!hasSubmittedFood)
+        {
+            string food = foodInputField.text;
+
+            if (!string.IsNullOrEmpty(food))
+            {
+                hasSubmittedFood = true;
+                currentFood = food;
+                ingredientCount = 0;
+                isFoodInputFrozen = true;
+                ClearFoodInputField();
+            }
+        }
+        else
+        {
+            string ingredient = ingredientInputFields[ingredientCount].text;
+
+            if (!string.IsNullOrEmpty(ingredient) && ingredientCount < 4)
+            {
+                IncreaseHungerLevel();
+                ClearIngredientInputField(ingredientCount);
+                ingredientCount++;
+
+                if (ingredientCount >= 4)
+                {
+                    hasSubmittedFood = false;
+                    isFoodInputFrozen = false;
+                    ClearFoodInputField();
+                }
+            }
+        }
+    }
+}
