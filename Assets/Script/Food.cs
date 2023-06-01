@@ -16,22 +16,36 @@ public class Food : MonoBehaviour
     public Button submitWaterButton;
     public GameObject hungerPopupPanel;
     public GameObject thirstPopupPanel;
-    public Button submitFoodAndIngredientsButton; // New button for submitting food and ingredients
 
-    private const float reductionAmount = 0.3f;
+    private const float reductionAmount = 0.31f;
     private const float ingredientIncreaseAmount = 0.06f;
     private const float requiredWaterAmount = 500f;
+    private const float maxHungerLevel = 1f;
+    private const float maxThirstLevel = 1f;
 
-    private float hungerLevel = 0.7f;
-    private float thirstLevel = 0.7f;
+    private float hungerLevel = 0.71f;
+    private float thirstLevel = 0.71f;
     private bool isHungerFull = false;
     private bool isThirstFull = false;
     private bool hasSubmittedFood = false;
-    private bool isFoodInputFrozen = false;
     private string currentFood = "";
     private int ingredientCount = 0;
     private DateTime currentDateTime;
     private DateTime currentDay;
+
+    [SerializeField]
+    private Text hungerText;
+
+    [SerializeField]
+    private Text thirstText;
+
+    [SerializeField]
+    private Text currentTimeText;
+
+    [SerializeField]
+    private Text mealText;
+
+    private bool hasReducedLevels = false;
 
     private void Start()
     {
@@ -45,43 +59,52 @@ public class Food : MonoBehaviour
 
         submitWaterButton.onClick.AddListener(SubmitWaterInput);
 
-        hungerBar.value = hungerLevel;
-        thirstBar.value = thirstLevel;
+        UpdateHungerAndThirstBars(); // Update the bars initially
+        UpdateHungerAndThirstText(); // Update the text initially
 
         UpdateCurrentDay();
-
-        submitFoodAndIngredientsButton.onClick.AddListener(SubmitFoodAndIngredientsInput); // Add listener for new button
+        DisplayMealText();
     }
 
     private void Update()
     {
-        // Track real-time and reduce hunger and thirst levels accordingly
         currentDateTime = DateTime.Now;
-        ReduceLevelsAtSpecifiedTimes();
+
+        if (currentDateTime.Minute == 0)
+        {
+            ReduceLevelsAtSpecifiedTimes();
+        }
+
+        currentTimeText.text = currentDateTime.ToString("HH:mm:ss");
+
+        DisplayMealText(); // Moved this line to ensure it gets called every frame
     }
 
     private void ReduceLevelsAtSpecifiedTimes()
     {
-        if (currentDateTime.Hour == 9 && currentDateTime.Minute == 0)
+        if (currentDateTime.Hour == 9 && !hasReducedLevels)
         {
             ReduceHungerAndThirstLevels();
+            Debug.Log($"Reduced levels at 09:00. Current time: {currentDateTime.ToString("HH:mm:ss")}");
         }
-        else if (currentDateTime.Hour == 14 && currentDateTime.Minute == 0)
+        else if (currentDateTime.Hour == 14 && !hasReducedLevels)
         {
             ReduceHungerAndThirstLevels();
+            Debug.Log($"Reduced levels at 14:00. Current time: {currentDateTime.ToString("HH:mm:ss")}");
         }
-        else if (currentDateTime.Hour == 20 && currentDateTime.Minute == 0)
+        else if (currentDateTime.Hour == 20 && !hasReducedLevels)
         {
             ReduceHungerAndThirstLevels();
+            Debug.Log($"Reduced levels at 20:00. Current time: {currentDateTime.ToString("HH:mm:ss")}");
         }
     }
 
     private void ReduceHungerAndThirstLevels()
     {
-        float reductionAmountPerHour = 0.1f;
+        float reductionAmountPerHour = 1f - reductionAmount;
 
-        hungerLevel -= reductionAmountPerHour;
-        thirstLevel -= reductionAmountPerHour;
+        hungerLevel *= reductionAmountPerHour;
+        thirstLevel *= reductionAmountPerHour;
 
         if (hungerLevel <= 0f)
         {
@@ -96,6 +119,9 @@ public class Food : MonoBehaviour
         }
 
         UpdateHungerAndThirstBars();
+        UpdateHungerAndThirstText();
+
+        hasReducedLevels = true;
     }
 
     private void UpdateCurrentDay()
@@ -113,7 +139,6 @@ public class Food : MonoBehaviour
             currentFood = food;
             ingredientCount = 0;
             IncreaseHungerLevel();
-            isFoodInputFrozen = true;
             ClearFoodInputField();
             ClearIngredientInputFields();
         }
@@ -133,6 +158,7 @@ public class Food : MonoBehaviour
             {
                 hasSubmittedFood = false;
                 ClearFoodInputField();
+                ClearIngredientInputFields();
             }
         }
     }
@@ -154,6 +180,7 @@ public class Food : MonoBehaviour
                 }
 
                 UpdateHungerAndThirstBars();
+                UpdateHungerAndThirstText();
             }
             else
             {
@@ -180,6 +207,7 @@ public class Food : MonoBehaviour
         }
 
         UpdateHungerAndThirstBars();
+        UpdateHungerAndThirstText();
     }
 
     private void ClearFoodInputField()
@@ -228,38 +256,36 @@ public class Food : MonoBehaviour
         thirstBar.value = thirstLevel;
     }
 
-    private void SubmitFoodAndIngredientsInput()
+    private void UpdateHungerAndThirstText()
     {
-        if (!hasSubmittedFood)
-        {
-            string food = foodInputField.text;
+        hungerText.text = $"{(int)(hungerLevel * 100)}/{(int)(maxHungerLevel * 100)}";
+        thirstText.text = $"{(int)(thirstLevel * 100)}/{(int)(maxThirstLevel * 100)}";
+    }
 
-            if (!string.IsNullOrEmpty(food))
-            {
-                hasSubmittedFood = true;
-                currentFood = food;
-                ingredientCount = 0;
-                isFoodInputFrozen = true;
-                ClearFoodInputField();
-            }
+    private void DisplayMealText()
+    {
+        TimeSpan currentTime = currentDateTime.TimeOfDay;
+
+        TimeSpan breakfastTime = new TimeSpan(9, 0, 0);
+        TimeSpan lunchTime = new TimeSpan(14, 0, 0);
+        TimeSpan dinnerTime = new TimeSpan(20, 0, 0);
+
+        if (currentTime >= breakfastTime && currentTime < lunchTime)
+        {
+            mealText.text = "Desayuno";
+        }
+        else if (currentTime >= lunchTime && currentTime < dinnerTime)
+        {
+            mealText.text = "Almuerzo";
+        }
+        else if (currentTime >= dinnerTime || currentTime < breakfastTime)
+        {
+            mealText.text = "Cena";
         }
         else
         {
-            string ingredient = ingredientInputFields[ingredientCount].text;
-
-            if (!string.IsNullOrEmpty(ingredient) && ingredientCount < 4)
-            {
-                IncreaseHungerLevel();
-                ClearIngredientInputField(ingredientCount);
-                ingredientCount++;
-
-                if (ingredientCount >= 4)
-                {
-                    hasSubmittedFood = false;
-                    isFoodInputFrozen = false;
-                    ClearFoodInputField();
-                }
-            }
+            mealText.text = "";
         }
     }
+
 }
