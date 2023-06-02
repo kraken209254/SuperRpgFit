@@ -756,7 +756,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Ingrese texto...
+  m_Text: Ingrese ingredientes
 --- !u!222 &275190729
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1864,7 +1864,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Ingrese texto...
+  m_Text: 'Ingrese cantidad
+
+'
 --- !u!222 &1039172035
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2117,7 +2119,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Ingrese texto...
+  m_Text: Ingrese alimento
 --- !u!222 &1203716903
 CanvasRenderer:
   m_ObjectHideFlags: 0
