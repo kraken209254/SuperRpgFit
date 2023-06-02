@@ -3799,8 +3799,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -37.499992, y: 376.40002}
-  m_SizeDelta: {x: 75, y: 30}
+  m_AnchoredPosition: {x: -16.8825, y: 376.40002}
+  m_SizeDelta: {x: 116.2351, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1990211256
 MonoBehaviour:
@@ -3835,7 +3835,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Health
+  m_Text: "Alimentaci\xF3n"
 --- !u!222 &1990211257
 CanvasRenderer:
   m_ObjectHideFlags: 0
