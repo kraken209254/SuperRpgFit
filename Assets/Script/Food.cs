@@ -17,14 +17,14 @@ public class Food : MonoBehaviour
     public GameObject hungerPopupPanel;
     public GameObject thirstPopupPanel;
 
-    private const float reductionAmount = 0.31f;
+    private const float reductionAmount = 0.30f;
     private const float ingredientIncreaseAmount = 0.06f;
     private const float requiredWaterAmount = 500f;
     private const float maxHungerLevel = 1f;
     private const float maxThirstLevel = 1f;
 
-    private float hungerLevel = 0.71f;
-    private float thirstLevel = 0.71f;
+    private float hungerLevel = 1f;
+    private float thirstLevel = 1f;
     private bool isHungerFull = false;
     private bool isThirstFull = false;
     private bool hasSubmittedFood = false;
@@ -59,8 +59,8 @@ public class Food : MonoBehaviour
 
         submitWaterButton.onClick.AddListener(SubmitWaterInput);
 
-        UpdateHungerAndThirstBars(); // Update the bars initially
-        UpdateHungerAndThirstText(); // Update the text initially
+        UpdateHungerAndThirstBars(); 
+        UpdateHungerAndThirstText(); 
 
         UpdateCurrentDay();
         DisplayMealText();
@@ -77,7 +77,7 @@ public class Food : MonoBehaviour
 
         currentTimeText.text = currentDateTime.ToString("HH:mm:ss");
 
-        DisplayMealText(); // Moved this line to ensure it gets called every frame
+        DisplayMealText(); 
     }
 
     private void ReduceLevelsAtSpecifiedTimes()
@@ -85,17 +85,17 @@ public class Food : MonoBehaviour
         if (currentDateTime.Hour == 9 && !hasReducedLevels)
         {
             ReduceHungerAndThirstLevels();
-            Debug.Log($"Reduced levels at 09:00. Current time: {currentDateTime.ToString("HH:mm:ss")}");
+            //Debug.Log($"Reduced levels at 09:00. Current time: {currentDateTime.ToString("HH:mm:ss")}");
         }
         else if (currentDateTime.Hour == 14 && !hasReducedLevels)
         {
             ReduceHungerAndThirstLevels();
-            Debug.Log($"Reduced levels at 14:00. Current time: {currentDateTime.ToString("HH:mm:ss")}");
+            //Debug.Log($"Reduced levels at 14:00. Current time: {currentDateTime.ToString("HH:mm:ss")}");
         }
         else if (currentDateTime.Hour == 20 && !hasReducedLevels)
         {
             ReduceHungerAndThirstLevels();
-            Debug.Log($"Reduced levels at 20:00. Current time: {currentDateTime.ToString("HH:mm:ss")}");
+            //Debug.Log($"Reduced levels at 20:00. Current time: {currentDateTime.ToString("HH:mm:ss")}");
         }
     }
 
@@ -276,7 +276,7 @@ public class Food : MonoBehaviour
         }
         else if (currentTime >= lunchTime && currentTime < dinnerTime)
         {
-            mealText.text = "Almuerzo";
+            mealText.text = "Comida";
         }
         else if (currentTime >= dinnerTime || currentTime < breakfastTime)
         {
