@@ -3,7 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Hora1
+  - Hora2
+  - Min1
+  - Min2
+  - Sec1
+  - Sec2
+  - Textos
   layers:
   - Default
   - TransparentFX
