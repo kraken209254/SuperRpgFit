@@ -361,8 +361,13 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
+<<<<<<< Updated upstream
   m_AnchoredPosition: {x: 171, y: 253}
   m_SizeDelta: {x: 200, y: 50}
+=======
+  m_AnchoredPosition: {x: 263.398, y: 229.90051}
+  m_SizeDelta: {x: 384.796, y: 96.199}
+>>>>>>> Stashed changes
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &198118144
 MonoBehaviour:
@@ -411,8 +416,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
+<<<<<<< Updated upstream
   m_fontSize: 50
   m_fontSizeBase: 50
+=======
+  m_fontSize: 100
+  m_fontSizeBase: 100
+>>>>>>> Stashed changes
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -545,8 +555,13 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
+<<<<<<< Updated upstream
   m_AnchoredPosition: {x: -173, y: -395}
   m_SizeDelta: {x: 200, y: 50}
+=======
+  m_AnchoredPosition: {x: -308.84607, y: -536.6948}
+  m_SizeDelta: {x: 320.25, y: 80.0637}
+>>>>>>> Stashed changes
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &588512386
 MonoBehaviour:
@@ -595,8 +610,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
+<<<<<<< Updated upstream
   m_fontSize: 50
   m_fontSizeBase: 50
+=======
+  m_fontSize: 100
+  m_fontSizeBase: 100
+>>>>>>> Stashed changes
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -681,8 +701,13 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
+<<<<<<< Updated upstream
   m_AnchoredPosition: {x: -166, y: 401}
   m_SizeDelta: {x: 193.3268, y: 193.3262}
+=======
+  m_AnchoredPosition: {x: -234.84537, y: 444.40955}
+  m_SizeDelta: {x: 282.3123, y: 282.3115}
+>>>>>>> Stashed changes
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &755989473
 MonoBehaviour:
@@ -810,8 +835,13 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
+<<<<<<< Updated upstream
   m_AnchoredPosition: {x: 191, y: -392.36}
   m_SizeDelta: {x: 280.67, y: 60.2829}
+=======
+  m_AnchoredPosition: {x: 247, y: -531}
+  m_SizeDelta: {x: 521.0967, y: 166.8101}
+>>>>>>> Stashed changes
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &922386930
 MonoBehaviour:
@@ -860,8 +890,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
+<<<<<<< Updated upstream
   m_fontSize: 50
   m_fontSizeBase: 50
+=======
+  m_fontSize: 100
+  m_fontSizeBase: 100
+>>>>>>> Stashed changes
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -945,8 +980,13 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
+<<<<<<< Updated upstream
   m_AnchoredPosition: {x: -166, y: 253}
   m_SizeDelta: {x: 200, y: 50}
+=======
+  m_AnchoredPosition: {x: -243.01, y: 227.5264}
+  m_SizeDelta: {x: 403.79, y: 100.9472}
+>>>>>>> Stashed changes
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1013200410
 MonoBehaviour:
@@ -995,8 +1035,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
+<<<<<<< Updated upstream
   m_fontSize: 50
   m_fontSizeBase: 50
+=======
+  m_fontSize: 100
+  m_fontSizeBase: 100
+>>>>>>> Stashed changes
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1096,7 +1141,11 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
+<<<<<<< Updated upstream
   m_ReferenceResolution: {x: 800, y: 600}
+=======
+  m_ReferenceResolution: {x: 1170, y: 2530}
+>>>>>>> Stashed changes
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -1191,8 +1240,13 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
+<<<<<<< Updated upstream
   m_AnchoredPosition: {x: -0.0015003, y: 0.0019226}
   m_SizeDelta: {x: 66.667, y: 69.251}
+=======
+  m_AnchoredPosition: {x: 0.00099182, y: -0.0036011}
+  m_SizeDelta: {x: 97.5, y: 101.28}
+>>>>>>> Stashed changes
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1418850696
 MonoBehaviour:
@@ -1268,8 +1322,13 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
+<<<<<<< Updated upstream
   m_AnchoredPosition: {x: 203, y: 399.35}
   m_SizeDelta: {x: 196.6266, y: 196.6248}
+=======
+  m_AnchoredPosition: {x: 304, y: 442}
+  m_SizeDelta: {x: 287.1311, y: 287.1284}
+>>>>>>> Stashed changes
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1427099057
 MonoBehaviour:
@@ -1482,8 +1541,13 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
+<<<<<<< Updated upstream
   m_AnchoredPosition: {x: 191.00003, y: -238.54}
   m_SizeDelta: {x: 221.4984, y: 221.5}
+=======
+  m_AnchoredPosition: {x: 246.9967, y: -222.8717}
+  m_SizeDelta: {x: 323.4509, y: 323.4533}
+>>>>>>> Stashed changes
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1937843264
 MonoBehaviour:
@@ -1612,8 +1676,13 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
+<<<<<<< Updated upstream
   m_AnchoredPosition: {x: -150.55, y: -245}
   m_SizeDelta: {x: 234.4285, y: 234.4279}
+=======
+  m_AnchoredPosition: {x: -277, y: -238}
+  m_SizeDelta: {x: 342.3325, y: 342.3317}
+>>>>>>> Stashed changes
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2090640441
 MonoBehaviour:
