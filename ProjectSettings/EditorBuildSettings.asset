@@ -4,33 +4,5 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
-  - enabled: 1
-<<<<<<< Updated upstream
-    path: Assets/Scenes/Hungerthirst.unity
-    guid: 553636d374d1386489d849ad93bd9477
-=======
-<<<<<<< Updated upstream
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
-=======
-    path: Assets/Scenes/Hungerthirst.unity
-    guid: 553636d374d1386489d849ad93bd9477
-  - enabled: 1
-    path: Assets/Scenes/Dormir.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
-    path: Assets/Scenes/Medicamentos.unity
-    guid: 5bdc887411e9c6c4db8d8ee55fee37b3
-  - enabled: 1
-    path: Assets/Scenes/Menu.unity
-    guid: 4fea3c35baad6fc4e8575afecc10c133
-  - enabled: 1
-    path: Assets/Scenes/TemplateEjercicios.unity
-    guid: 67e3c3663308fdc43b6225279f1b5e59
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+  m_Scenes: []
   m_configObjects: {}
