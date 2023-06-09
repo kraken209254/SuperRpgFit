@@ -11,6 +11,7 @@ TagManager:
   - Sec1
   - Sec2
   - Textos
+  - Selector
   layers:
   - Default
   - TransparentFX
