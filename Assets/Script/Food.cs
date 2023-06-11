@@ -4,6 +4,9 @@ using System;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using System.IO;
+using System.Net;
+using System.Text;
 
 public class Food : MonoBehaviour
 {
@@ -27,8 +30,8 @@ public class Food : MonoBehaviour
     private const float maxHungerLevel = 1f;
     private const float maxThirstLevel = 1f;
 
-    private float hungerLevel = 0.71f;
-    private float thirstLevel = 0.71f;
+    private float hungerLevel = 1f;
+    private float thirstLevel = 1f;
     private bool isHungerFull = false;
     private bool isThirstFull = false;
     private bool hasSubmittedFood = false;
@@ -64,7 +67,27 @@ public class Food : MonoBehaviour
 
         UpdateCurrentDay();
         DisplayMealText();
+
+        //StartCoroutine(CheckAPIConnection());
     }
+
+    //private IEnumerator CheckAPIConnection()
+    //{
+    // using (UnityWebRequest www = UnityWebRequest.Get(postURL))
+    // {
+    //yield return www.SendWebRequest();
+
+    // if (www.result == UnityWebRequest.Result.Success)
+    // {
+    //Debug.Log("API connection successful");
+    // }
+    // else
+    // {
+    // Debug.LogError("API connection failed: " + www.error);
+    // }
+    // }
+    //}
+
 
     private void Update()
     {
@@ -140,29 +163,38 @@ public class Food : MonoBehaviour
             ingredientCount = 0;
             IncreaseHungerLevel();
             ClearFoodInputField();
-            StartCoroutine(SendFoodData(currentFood));
+            SendFoodData(currentFood);
         }
     }
 
-    private IEnumerator SendFoodData(string food)
+    private void SendFoodData(string comida)
     {
-        WWWForm form = new WWWForm();
-        form.AddField("comida", food);
+        // Crea un objeto JSON con los datos de la comida
+        string json = "{\"Comida\": \"" + comida + "\"}";
 
-        using (UnityWebRequest www = UnityWebRequest.Post(postURL, form))
+        // Crea una solicitud POST a la API
+        WebRequest request = WebRequest.Create(postURL);
+        request.Method = "POST";
+        request.ContentType = "application/json";
+
+        // Convierte el objeto JSON en un arreglo de bytes
+        byte[] data = Encoding.UTF8.GetBytes(json);
+
+        // Establece los datos de la solicitud
+        request.ContentLength = data.Length;
+        using (Stream stream = request.GetRequestStream())
         {
-            yield return www.SendWebRequest();
+            stream.Write(data, 0, data.Length);
+        }
 
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError("Error sending food data: " + www.error);
-            }
-            else
-            {
-                Debug.Log("Food data sent successfully");
-            }
+        // Envía la solicitud y obtén la respuesta
+        using (WebResponse response = request.GetResponse())
+        {
+            // Maneja la respuesta de la API si es necesario
+            // ...
         }
     }
+
 
 
     private void SubmitIngredientsInput()
@@ -187,34 +219,40 @@ public class Food : MonoBehaviour
 
             IncreaseHungerLevel(nonEmptyIngredientCount);
             ClearIngredientInputFields();
-            StartCoroutine(SendIngredientsData(ingredient1, ingredient2, ingredient3, ingredient4));
+            SendIngredientsData(ingredient1, ingredient2, ingredient3, ingredient4);
             hasSubmittedFood = false;
             ClearFoodInputField();
         }
     }
 
-    private IEnumerator SendIngredientsData(string ingredient1, string ingredient2, string ingredient3, string ingredient4)
+    private void SendIngredientsData(string ingredient1, string ingredient2, string ingredient3, string ingredient4)
     {
-        WWWForm form = new WWWForm();
-        form.AddField("ingrediente1", ingredient1);
-        form.AddField("ingrediente2", ingredient2);
-        form.AddField("ingrediente3", ingredient3);
-        form.AddField("ingrediente4", ingredient4);
+        // Crea un objeto JSON con los datos de los ingredientes
+        string json = "{\"Ingrediente1\": \"" + ingredient1 + "\", \"Ingrediente2\": \"" + ingredient2 + "\", \"Ingrediente3\": \"" + ingredient3 + "\", \"Ingrediente4\": \"" + ingredient4 + "\"}";
 
-        using (UnityWebRequest www = UnityWebRequest.Post(postURL, form))
+        // Crea una solicitud POST a la API
+        WebRequest request = WebRequest.Create(postURL);
+        request.Method = "POST";
+        request.ContentType = "application/json";
+
+        // Convierte el objeto JSON en un arreglo de bytes
+        byte[] data = Encoding.UTF8.GetBytes(json);
+
+        // Establece los datos de la solicitud
+        request.ContentLength = data.Length;
+        using (Stream stream = request.GetRequestStream())
         {
-            yield return www.SendWebRequest();
+            stream.Write(data, 0, data.Length);
+        }
 
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError("Error sending ingredients data: " + www.error);
-            }
-            else
-            {
-                Debug.Log("Ingredients data sent successfully");
-            }
+        // Envía la solicitud y obtén la respuesta
+        using (WebResponse response = request.GetResponse())
+        {
+            // Maneja la respuesta de la API si es necesario
+            // ...
         }
     }
+
 
     private void SubmitWaterInput()
     {
@@ -232,7 +270,7 @@ public class Food : MonoBehaviour
                     DisplayThirstPopup();
                 }
 
-                StartCoroutine(SendWaterData(waterAmount));
+                SendWaterData(waterAmount);
                 UpdateHungerAndThirstBars();
                 UpdateHungerAndThirstText();
             }
@@ -249,25 +287,34 @@ public class Food : MonoBehaviour
         waterInputField.text = "";
     }
 
-    private IEnumerator SendWaterData(float waterAmount)
+    private void SendWaterData(float waterAmount)
     {
-        WWWForm form = new WWWForm();
-        form.AddField("MLAgua", waterAmount.ToString());
+        // Crea un objeto JSON con los datos del agua
+        string json = "{\"Agua\": " + waterAmount.ToString() + "}";
 
-        using (UnityWebRequest www = UnityWebRequest.Post(postURL, form))
+        // Crea una solicitud POST a la API
+        WebRequest request = WebRequest.Create(postURL);
+        request.Method = "POST";
+        request.ContentType = "application/json";
+
+        // Convierte el objeto JSON en un arreglo de bytes
+        byte[] data = Encoding.UTF8.GetBytes(json);
+
+        // Establece los datos de la solicitud
+        request.ContentLength = data.Length;
+        using (Stream stream = request.GetRequestStream())
         {
-            yield return www.SendWebRequest();
+            stream.Write(data, 0, data.Length);
+        }
 
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError("Error sending water data: " + www.error);
-            }
-            else
-            {
-                Debug.Log("Water data sent successfully");
-            }
+        // Envía la solicitud y obtén la respuesta
+        using (WebResponse response = request.GetResponse())
+        {
+            // Maneja la respuesta de la API si es necesario
+            // ...
         }
     }
+
 
     private void IncreaseHungerLevel(int ingredientCount = 1)
     {
@@ -357,3 +404,4 @@ public class Food : MonoBehaviour
         }
     }
 }
+
