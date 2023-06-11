@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class Food : MonoBehaviour
@@ -9,10 +10,13 @@ public class Food : MonoBehaviour
     public Slider hungerBar;
     public Slider thirstBar;
     public InputField foodInputField;
-    public InputField[] ingredientInputFields;
+    public InputField ingredientInputField1;
+    public InputField ingredientInputField2;
+    public InputField ingredientInputField3;
+    public InputField ingredientInputField4;
     public InputField waterInputField;
     public Button submitFoodButton;
-    public Button[] submitIngredientButtons;
+    public Button submitIngredientsButton;
     public Button submitWaterButton;
     public GameObject hungerPopupPanel;
     public GameObject thirstPopupPanel;
@@ -23,8 +27,8 @@ public class Food : MonoBehaviour
     private const float maxHungerLevel = 1f;
     private const float maxThirstLevel = 1f;
 
-    private float hungerLevel = 1f;
-    private float thirstLevel = 1f;
+    private float hungerLevel = 0.71f;
+    private float thirstLevel = 0.71f;
     private bool isHungerFull = false;
     private bool isThirstFull = false;
     private bool hasSubmittedFood = false;
@@ -47,20 +51,16 @@ public class Food : MonoBehaviour
 
     private bool hasReducedLevels = false;
 
+    readonly string postURL = "http://localhost:8090/api/comida/guardar";
+
     private void Start()
     {
         submitFoodButton.onClick.AddListener(SubmitFoodInput);
-
-        for (int i = 0; i < submitIngredientButtons.Length; i++)
-        {
-            int index = i;
-            submitIngredientButtons[index].onClick.AddListener(() => SubmitIngredientInput(index));
-        }
-
+        submitIngredientsButton.onClick.AddListener(SubmitIngredientsInput);
         submitWaterButton.onClick.AddListener(SubmitWaterInput);
 
-        UpdateHungerAndThirstBars(); 
-        UpdateHungerAndThirstText(); 
+        UpdateHungerAndThirstBars();
+        UpdateHungerAndThirstText();
 
         UpdateCurrentDay();
         DisplayMealText();
@@ -77,7 +77,7 @@ public class Food : MonoBehaviour
 
         currentTimeText.text = currentDateTime.ToString("HH:mm:ss");
 
-        DisplayMealText(); 
+        DisplayMealText();
     }
 
     private void ReduceLevelsAtSpecifiedTimes()
@@ -140,25 +140,78 @@ public class Food : MonoBehaviour
             ingredientCount = 0;
             IncreaseHungerLevel();
             ClearFoodInputField();
-            ClearIngredientInputFields();
+            StartCoroutine(SendFoodData(currentFood));
         }
     }
 
-    private void SubmitIngredientInput(int index)
+    private IEnumerator SendFoodData(string food)
     {
-        string ingredient = ingredientInputFields[index].text;
+        WWWForm form = new WWWForm();
+        form.AddField("comida", food);
 
-        if (hasSubmittedFood && !string.IsNullOrEmpty(ingredient) && ingredientCount < 4)
+        using (UnityWebRequest www = UnityWebRequest.Post(postURL, form))
         {
-            IncreaseHungerLevel();
-            ClearIngredientInputField(index);
-            ingredientCount++;
+            yield return www.SendWebRequest();
 
-            if (ingredientCount >= 4)
+            if (www.result != UnityWebRequest.Result.Success)
             {
-                hasSubmittedFood = false;
-                ClearFoodInputField();
-                ClearIngredientInputFields();
+                Debug.LogError("Error sending food data: " + www.error);
+            }
+            else
+            {
+                Debug.Log("Food data sent successfully");
+            }
+        }
+    }
+
+
+    private void SubmitIngredientsInput()
+    {
+        string ingredient1 = ingredientInputField1.text;
+        string ingredient2 = ingredientInputField2.text;
+        string ingredient3 = ingredientInputField3.text;
+        string ingredient4 = ingredientInputField4.text;
+
+        if (hasSubmittedFood && (!string.IsNullOrEmpty(ingredient1) || !string.IsNullOrEmpty(ingredient2) || !string.IsNullOrEmpty(ingredient3) || !string.IsNullOrEmpty(ingredient4)))
+        {
+            // Calcular la cantidad de ingredientes no vacíos
+            int nonEmptyIngredientCount = 0;
+            if (!string.IsNullOrEmpty(ingredient1))
+                nonEmptyIngredientCount++;
+            if (!string.IsNullOrEmpty(ingredient2))
+                nonEmptyIngredientCount++;
+            if (!string.IsNullOrEmpty(ingredient3))
+                nonEmptyIngredientCount++;
+            if (!string.IsNullOrEmpty(ingredient4))
+                nonEmptyIngredientCount++;
+
+            IncreaseHungerLevel(nonEmptyIngredientCount);
+            ClearIngredientInputFields();
+            StartCoroutine(SendIngredientsData(ingredient1, ingredient2, ingredient3, ingredient4));
+            hasSubmittedFood = false;
+            ClearFoodInputField();
+        }
+    }
+
+    private IEnumerator SendIngredientsData(string ingredient1, string ingredient2, string ingredient3, string ingredient4)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("ingrediente1", ingredient1);
+        form.AddField("ingrediente2", ingredient2);
+        form.AddField("ingrediente3", ingredient3);
+        form.AddField("ingrediente4", ingredient4);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(postURL, form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Error sending ingredients data: " + www.error);
+            }
+            else
+            {
+                Debug.Log("Ingredients data sent successfully");
             }
         }
     }
@@ -179,6 +232,7 @@ public class Food : MonoBehaviour
                     DisplayThirstPopup();
                 }
 
+                StartCoroutine(SendWaterData(waterAmount));
                 UpdateHungerAndThirstBars();
                 UpdateHungerAndThirstText();
             }
@@ -195,9 +249,29 @@ public class Food : MonoBehaviour
         waterInputField.text = "";
     }
 
-    private void IncreaseHungerLevel()
+    private IEnumerator SendWaterData(float waterAmount)
     {
-        float ingredientIncrease = ingredientIncreaseAmount;
+        WWWForm form = new WWWForm();
+        form.AddField("MLAgua", waterAmount.ToString());
+
+        using (UnityWebRequest www = UnityWebRequest.Post(postURL, form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Error sending water data: " + www.error);
+            }
+            else
+            {
+                Debug.Log("Water data sent successfully");
+            }
+        }
+    }
+
+    private void IncreaseHungerLevel(int ingredientCount = 1)
+    {
+        float ingredientIncrease = ingredientIncreaseAmount * ingredientCount;
         hungerLevel += ingredientIncrease;
 
         if (hungerLevel >= 1f)
@@ -217,15 +291,10 @@ public class Food : MonoBehaviour
 
     private void ClearIngredientInputFields()
     {
-        foreach (InputField inputField in ingredientInputFields)
-        {
-            inputField.text = "";
-        }
-    }
-
-    private void ClearIngredientInputField(int index)
-    {
-        ingredientInputFields[index].text = "";
+        ingredientInputField1.text = "";
+        ingredientInputField2.text = "";
+        ingredientInputField3.text = "";
+        ingredientInputField4.text = "";
     }
 
     private void DisplayHungerPopup()
@@ -287,5 +356,4 @@ public class Food : MonoBehaviour
             mealText.text = "";
         }
     }
-
 }

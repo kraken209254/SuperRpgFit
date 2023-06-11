@@ -11,4 +11,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Hungerthirst.unity
     guid: 553636d374d1386489d849ad93bd9477
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 8c407f6c47f8a9c4a8d12c895c83dd44, type: 2}
