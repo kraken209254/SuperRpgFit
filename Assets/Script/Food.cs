@@ -250,13 +250,13 @@ public class Food : MonoBehaviour
     private void DisplayHungerPopup()
     {
         hungerPopupPanel.SetActive(true);
-        Invoke(nameof(HideHungerPopup), 5f);
+        Invoke(nameof(HideHungerPopup), 1f);
     }
 
     private void DisplayThirstPopup()
     {
         thirstPopupPanel.SetActive(true);
-        Invoke(nameof(HideThirstPopup), 5f);
+        Invoke(nameof(HideThirstPopup), 1f);
     }
 
     private void HideHungerPopup()
