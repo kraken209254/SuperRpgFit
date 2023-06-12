@@ -30,8 +30,8 @@ public class Food : MonoBehaviour
     private const float maxHungerLevel = 1f;
     private const float maxThirstLevel = 1f;
 
-    private float hungerLevel = 0.7f;
-    private float thirstLevel = 0.7f;
+    private float hungerLevel = 1f;
+    private float thirstLevel = 1f;
     private bool isHungerFull = false;
     private bool isThirstFull = false;
     private bool hasSubmittedFood = false;
@@ -190,7 +190,8 @@ public class Food : MonoBehaviour
     private void SendFoodData(string comida, string ingrediente1, string ingrediente2, string ingrediente3, string ingrediente4, float waterAmount)
     {
         // Crea un objeto JSON con los datos de la comida, ingredientes y agua
-        string json = "{\"Comida\": \"" + comida + "\", \"Ingrediente1\": \"" + ingrediente1 + "\", \"Ingrediente2\": \"" + ingrediente2 + "\", \"Ingrediente3\": \"" + ingrediente3 + "\", \"Ingrediente4\": \"" + ingrediente4 + "\", \"Agua\": " + waterAmount.ToString() + "}";
+        string json = "{\"Comida\": \"" + comida + "\", \"Ingrediente1\": \"" + ingrediente1 + "\", \"Ingrediente2\": \"" + ingrediente2 + "\", \"Ingrediente3\": \"" + ingrediente3 + "\", \"Ingrediente4\": \"" + ingrediente4 + "\", \"Agua\": " + waterAmount.ToString() + ", \"IDPaciente\": 7}";
+
 
         // Crea una solicitud POST a la API
         WebRequest request = WebRequest.Create(postURL);
