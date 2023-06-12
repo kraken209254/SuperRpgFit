@@ -25,13 +25,13 @@ public class Food : MonoBehaviour
     public GameObject thirstPopupPanel;
 
     private const float reductionAmount = 0.30f;
-    private const float ingredientIncreaseAmount = 0.06f;
+    private const float ingredientIncreaseAmount = 0.30f;
     private const float requiredWaterAmount = 500f;
     private const float maxHungerLevel = 1f;
     private const float maxThirstLevel = 1f;
 
-    private float hungerLevel = 1f;
-    private float thirstLevel = 1f;
+    private float hungerLevel = 0.7f;
+    private float thirstLevel = 0.7f;
     private bool isHungerFull = false;
     private bool isThirstFull = false;
     private bool hasSubmittedFood = false;
@@ -59,7 +59,7 @@ public class Food : MonoBehaviour
     private void Start()
     {
         submitFoodButton.onClick.AddListener(SubmitFoodInput);
-        submitIngredientsButton.onClick.AddListener(SubmitIngredientsInput);
+        //submitIngredientsButton.onClick.AddListener(SubmitIngredientsInput);
         submitWaterButton.onClick.AddListener(SubmitWaterInput);
 
         UpdateHungerAndThirstBars();
@@ -68,26 +68,7 @@ public class Food : MonoBehaviour
         UpdateCurrentDay();
         DisplayMealText();
 
-        //StartCoroutine(CheckAPIConnection());
     }
-
-    //private IEnumerator CheckAPIConnection()
-    //{
-    // using (UnityWebRequest www = UnityWebRequest.Get(postURL))
-    // {
-    //yield return www.SendWebRequest();
-
-    // if (www.result == UnityWebRequest.Result.Success)
-    // {
-    //Debug.Log("API connection successful");
-    // }
-    // else
-    // {
-    // Debug.LogError("API connection failed: " + www.error);
-    // }
-    // }
-    //}
-
 
     private void Update()
     {
@@ -155,101 +136,20 @@ public class Food : MonoBehaviour
     private void SubmitFoodInput()
     {
         string food = foodInputField.text;
-
-        if (!string.IsNullOrEmpty(food))
-        {
-            hasSubmittedFood = true;
-            currentFood = food;
-            ingredientCount = 0;
-            IncreaseHungerLevel();
-            ClearFoodInputField();
-            SendFoodData(currentFood);
-        }
-    }
-
-    private void SendFoodData(string comida)
-    {
-        // Crea un objeto JSON con los datos de la comida
-        string json = "{\"Comida\": \"" + comida + "\"}";
-
-        // Crea una solicitud POST a la API
-        WebRequest request = WebRequest.Create(postURL);
-        request.Method = "POST";
-        request.ContentType = "application/json";
-
-        // Convierte el objeto JSON en un arreglo de bytes
-        byte[] data = Encoding.UTF8.GetBytes(json);
-
-        // Establece los datos de la solicitud
-        request.ContentLength = data.Length;
-        using (Stream stream = request.GetRequestStream())
-        {
-            stream.Write(data, 0, data.Length);
-        }
-
-        // Envía la solicitud y obtén la respuesta
-        using (WebResponse response = request.GetResponse())
-        {
-            // Maneja la respuesta de la API si es necesario
-            // ...
-        }
-    }
-
-
-
-    private void SubmitIngredientsInput()
-    {
         string ingredient1 = ingredientInputField1.text;
         string ingredient2 = ingredientInputField2.text;
         string ingredient3 = ingredientInputField3.text;
         string ingredient4 = ingredientInputField4.text;
 
-        if (hasSubmittedFood && (!string.IsNullOrEmpty(ingredient1) || !string.IsNullOrEmpty(ingredient2) || !string.IsNullOrEmpty(ingredient3) || !string.IsNullOrEmpty(ingredient4)))
+        if (!string.IsNullOrEmpty(food))
         {
-            // Calcular la cantidad de ingredientes no vacíos
-            int nonEmptyIngredientCount = 0;
-            if (!string.IsNullOrEmpty(ingredient1))
-                nonEmptyIngredientCount++;
-            if (!string.IsNullOrEmpty(ingredient2))
-                nonEmptyIngredientCount++;
-            if (!string.IsNullOrEmpty(ingredient3))
-                nonEmptyIngredientCount++;
-            if (!string.IsNullOrEmpty(ingredient4))
-                nonEmptyIngredientCount++;
-
-            IncreaseHungerLevel(nonEmptyIngredientCount);
-            ClearIngredientInputFields();
-            SendIngredientsData(ingredient1, ingredient2, ingredient3, ingredient4);
-            hasSubmittedFood = false;
+            hasSubmittedFood = true;
+            currentFood = food;
+            ingredientCount = 4; // Se han ingresado los 4 ingredientes
+            IncreaseHungerLevel(ingredientCount); // Aumenta el nivel de hambre
             ClearFoodInputField();
-        }
-    }
-
-    private void SendIngredientsData(string ingredient1, string ingredient2, string ingredient3, string ingredient4)
-    {
-        // Crea un objeto JSON con los datos de los ingredientes
-        string json = "{\"Ingrediente1\": \"" + ingredient1 + "\", \"Ingrediente2\": \"" + ingredient2 + "\", \"Ingrediente3\": \"" + ingredient3 + "\", \"Ingrediente4\": \"" + ingredient4 + "\"}";
-
-        // Crea una solicitud POST a la API
-        WebRequest request = WebRequest.Create(postURL);
-        request.Method = "POST";
-        request.ContentType = "application/json";
-
-        // Convierte el objeto JSON en un arreglo de bytes
-        byte[] data = Encoding.UTF8.GetBytes(json);
-
-        // Establece los datos de la solicitud
-        request.ContentLength = data.Length;
-        using (Stream stream = request.GetRequestStream())
-        {
-            stream.Write(data, 0, data.Length);
-        }
-
-        // Envía la solicitud y obtén la respuesta
-        using (WebResponse response = request.GetResponse())
-        {
-            // Maneja la respuesta de la API si es necesario
-            // ...
+            //ClearIngredientInputFields();
+            //SendFoodData(currentFood, ingredient1, ingredient2, ingredient3, ingredient4);
         }
     }
 
@@ -270,7 +170,7 @@ public class Food : MonoBehaviour
                     DisplayThirstPopup();
                 }
 
-                SendWaterData(waterAmount);
+                SendFoodData(currentFood, ingredientInputField1.text, ingredientInputField2.text, ingredientInputField3.text, ingredientInputField4.text, waterAmount);
                 UpdateHungerAndThirstBars();
                 UpdateHungerAndThirstText();
             }
@@ -287,10 +187,10 @@ public class Food : MonoBehaviour
         waterInputField.text = "";
     }
 
-    private void SendWaterData(float waterAmount)
+    private void SendFoodData(string comida, string ingrediente1, string ingrediente2, string ingrediente3, string ingrediente4, float waterAmount)
     {
-        // Crea un objeto JSON con los datos del agua
-        string json = "{\"Agua\": " + waterAmount.ToString() + "}";
+        // Crea un objeto JSON con los datos de la comida, ingredientes y agua
+        string json = "{\"Comida\": \"" + comida + "\", \"Ingrediente1\": \"" + ingrediente1 + "\", \"Ingrediente2\": \"" + ingrediente2 + "\", \"Ingrediente3\": \"" + ingrediente3 + "\", \"Ingrediente4\": \"" + ingrediente4 + "\", \"Agua\": " + waterAmount.ToString() + "}";
 
         // Crea una solicitud POST a la API
         WebRequest request = WebRequest.Create(postURL);
@@ -313,23 +213,25 @@ public class Food : MonoBehaviour
             // Maneja la respuesta de la API si es necesario
             // ...
         }
+
+        ClearIngredientInputFields();
     }
 
-
-    private void IncreaseHungerLevel(int ingredientCount = 1)
+    private void IncreaseHungerLevel(int ingredientCount)
     {
-        float ingredientIncrease = ingredientIncreaseAmount * ingredientCount;
+        float ingredientIncrease = ingredientIncreaseAmount * (ingredientCount + 1); // +1 para incluir la comida
         hungerLevel += ingredientIncrease;
 
-        if (hungerLevel >= 1f)
+        if (hungerLevel >= maxHungerLevel)
         {
-            hungerLevel = 1f;
+            hungerLevel = maxHungerLevel;
             DisplayHungerPopup();
         }
 
         UpdateHungerAndThirstBars();
         UpdateHungerAndThirstText();
     }
+
 
     private void ClearFoodInputField()
     {
@@ -404,4 +306,8 @@ public class Food : MonoBehaviour
         }
     }
 }
+
+
+
+
 
