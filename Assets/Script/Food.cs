@@ -2,23 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
+using System.IO;
+using System.Net;
+using System.Text;
 
 public class Food : MonoBehaviour
 {
     public Slider hungerBar;
     public Slider thirstBar;
     public InputField foodInputField;
-    public InputField[] ingredientInputFields;
+    public InputField ingredientInputField1;
+    public InputField ingredientInputField2;
+    public InputField ingredientInputField3;
+    public InputField ingredientInputField4;
     public InputField waterInputField;
     public Button submitFoodButton;
-    public Button[] submitIngredientButtons;
+    public Button submitIngredientsButton;
     public Button submitWaterButton;
     public GameObject hungerPopupPanel;
     public GameObject thirstPopupPanel;
 
     private const float reductionAmount = 0.30f;
-    private const float ingredientIncreaseAmount = 0.06f;
+    private const float ingredientIncreaseAmount = 0.30f;
     private const float requiredWaterAmount = 500f;
     private const float maxHungerLevel = 1f;
     private const float maxThirstLevel = 1f;
@@ -47,23 +54,20 @@ public class Food : MonoBehaviour
 
     private bool hasReducedLevels = false;
 
+    readonly string postURL = "http://localhost:8090/api/comida/guardar";
+
     private void Start()
     {
         submitFoodButton.onClick.AddListener(SubmitFoodInput);
-
-        for (int i = 0; i < submitIngredientButtons.Length; i++)
-        {
-            int index = i;
-            submitIngredientButtons[index].onClick.AddListener(() => SubmitIngredientInput(index));
-        }
-
+        //submitIngredientsButton.onClick.AddListener(SubmitIngredientsInput);
         submitWaterButton.onClick.AddListener(SubmitWaterInput);
 
-        UpdateHungerAndThirstBars(); 
-        UpdateHungerAndThirstText(); 
+        UpdateHungerAndThirstBars();
+        UpdateHungerAndThirstText();
 
         UpdateCurrentDay();
         DisplayMealText();
+
     }
 
     private void Update()
@@ -77,7 +81,7 @@ public class Food : MonoBehaviour
 
         currentTimeText.text = currentDateTime.ToString("HH:mm:ss");
 
-        DisplayMealText(); 
+        DisplayMealText();
     }
 
     private void ReduceLevelsAtSpecifiedTimes()
@@ -132,36 +136,23 @@ public class Food : MonoBehaviour
     private void SubmitFoodInput()
     {
         string food = foodInputField.text;
+        string ingredient1 = ingredientInputField1.text;
+        string ingredient2 = ingredientInputField2.text;
+        string ingredient3 = ingredientInputField3.text;
+        string ingredient4 = ingredientInputField4.text;
 
         if (!string.IsNullOrEmpty(food))
         {
             hasSubmittedFood = true;
             currentFood = food;
-            ingredientCount = 0;
-            IncreaseHungerLevel();
+            ingredientCount = 4; // Se han ingresado los 4 ingredientes
+            IncreaseHungerLevel(ingredientCount); // Aumenta el nivel de hambre
             ClearFoodInputField();
-            ClearIngredientInputFields();
+            //ClearIngredientInputFields();
+            //SendFoodData(currentFood, ingredient1, ingredient2, ingredient3, ingredient4);
         }
     }
 
-    private void SubmitIngredientInput(int index)
-    {
-        string ingredient = ingredientInputFields[index].text;
-
-        if (hasSubmittedFood && !string.IsNullOrEmpty(ingredient) && ingredientCount < 4)
-        {
-            IncreaseHungerLevel();
-            ClearIngredientInputField(index);
-            ingredientCount++;
-
-            if (ingredientCount >= 4)
-            {
-                hasSubmittedFood = false;
-                ClearFoodInputField();
-                ClearIngredientInputFields();
-            }
-        }
-    }
 
     private void SubmitWaterInput()
     {
@@ -179,6 +170,7 @@ public class Food : MonoBehaviour
                     DisplayThirstPopup();
                 }
 
+                SendFoodData(currentFood, ingredientInputField1.text, ingredientInputField2.text, ingredientInputField3.text, ingredientInputField4.text, waterAmount);
                 UpdateHungerAndThirstBars();
                 UpdateHungerAndThirstText();
             }
@@ -195,20 +187,52 @@ public class Food : MonoBehaviour
         waterInputField.text = "";
     }
 
-    private void IncreaseHungerLevel()
+    private void SendFoodData(string comida, string ingrediente1, string ingrediente2, string ingrediente3, string ingrediente4, float waterAmount)
     {
-        float ingredientIncrease = ingredientIncreaseAmount;
+        // Crea un objeto JSON con los datos de la comida, ingredientes y agua
+        string json = "{\"Comida\": \"" + comida + "\", \"Ingrediente1\": \"" + ingrediente1 + "\", \"Ingrediente2\": \"" + ingrediente2 + "\", \"Ingrediente3\": \"" + ingrediente3 + "\", \"Ingrediente4\": \"" + ingrediente4 + "\", \"Agua\": " + waterAmount.ToString() + ", \"IDPaciente\": 7}";
+
+
+        // Crea una solicitud POST a la API
+        WebRequest request = WebRequest.Create(postURL);
+        request.Method = "POST";
+        request.ContentType = "application/json";
+
+        // Convierte el objeto JSON en un arreglo de bytes
+        byte[] data = Encoding.UTF8.GetBytes(json);
+
+        // Establece los datos de la solicitud
+        request.ContentLength = data.Length;
+        using (Stream stream = request.GetRequestStream())
+        {
+            stream.Write(data, 0, data.Length);
+        }
+
+        // Envía la solicitud y obtén la respuesta
+        using (WebResponse response = request.GetResponse())
+        {
+            // Maneja la respuesta de la API si es necesario
+            // ...
+        }
+
+        ClearIngredientInputFields();
+    }
+
+    private void IncreaseHungerLevel(int ingredientCount)
+    {
+        float ingredientIncrease = ingredientIncreaseAmount * (ingredientCount + 1); // +1 para incluir la comida
         hungerLevel += ingredientIncrease;
 
-        if (hungerLevel >= 1f)
+        if (hungerLevel >= maxHungerLevel)
         {
-            hungerLevel = 1f;
+            hungerLevel = maxHungerLevel;
             DisplayHungerPopup();
         }
 
         UpdateHungerAndThirstBars();
         UpdateHungerAndThirstText();
     }
+
 
     private void ClearFoodInputField()
     {
@@ -217,27 +241,22 @@ public class Food : MonoBehaviour
 
     private void ClearIngredientInputFields()
     {
-        foreach (InputField inputField in ingredientInputFields)
-        {
-            inputField.text = "";
-        }
-    }
-
-    private void ClearIngredientInputField(int index)
-    {
-        ingredientInputFields[index].text = "";
+        ingredientInputField1.text = "";
+        ingredientInputField2.text = "";
+        ingredientInputField3.text = "";
+        ingredientInputField4.text = "";
     }
 
     private void DisplayHungerPopup()
     {
         hungerPopupPanel.SetActive(true);
-        Invoke(nameof(HideHungerPopup), 5f);
+        Invoke(nameof(HideHungerPopup), 1f);
     }
 
     private void DisplayThirstPopup()
     {
         thirstPopupPanel.SetActive(true);
-        Invoke(nameof(HideThirstPopup), 5f);
+        Invoke(nameof(HideThirstPopup), 1f);
     }
 
     private void HideHungerPopup()
@@ -287,5 +306,9 @@ public class Food : MonoBehaviour
             mealText.text = "";
         }
     }
-
 }
+
+
+
+
+
