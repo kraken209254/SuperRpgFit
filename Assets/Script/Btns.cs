@@ -28,19 +28,19 @@ public class Btns : MonoBehaviour
     }
 
     public void changeMM(){
-        MuyMal.GetComponent<Image>().color = Color.green;
+        MuyMal.GetComponent<Image>().color = Color.red;
     }
 
     public void changeM(){
-        Mal.GetComponent<Image>().color = Color.green;
+        Mal.GetComponent<Image>().color = Color.gray;
     }
 
     public void changeR(){
-        Regular.GetComponent<Image>().color = Color.green;
+        Regular.GetComponent<Image>().color = Color.yellow;
     }
 
     public void changeB(){
-        Bien.GetComponent<Image>().color = Color.green;
+        Bien.GetComponent<Image>().color = Color.cyan;
     }
 
     public void changeMB(){

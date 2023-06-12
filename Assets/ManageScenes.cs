@@ -18,22 +18,22 @@ public class ManageScenes : MonoBehaviour
     }
     public void loadEjercicio()
     {
-        SceneManager.LoadScene(4);
+        SceneManager.LoadScene("TemplateEjercicios");
     }
     public void loadMedicina()
     {
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene("Medicamentos");
     }
     public void loadDormir()
     {
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene("Dormir");
     }
     public void loadAlimentacion()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("Hungerthirst");
     }
     public void loadReturn()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("Menu");
     }
 }
