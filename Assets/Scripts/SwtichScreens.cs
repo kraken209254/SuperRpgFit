@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System;
 
 public class SwtichScreens : MonoBehaviour
 {
@@ -14,10 +15,19 @@ public class SwtichScreens : MonoBehaviour
     public GameObject deporteNombre;
     public float tiempoFinal;
     TextMeshProUGUI textDeporte;
+    public GameObject ManagerDb;
+    private ManDatabase dbManagerScript;
+    public GameObject TiempoDeporte;
+    private FillCircleOverTime TiempoDeporteScript;
+    public string formattedDate;
 
     private void Start()
     {
         textDeporte = deporteNombre.GetComponent<TextMeshProUGUI>();
+        dbManagerScript = ManagerDb.GetComponent<ManDatabase>();
+        TiempoDeporteScript = TiempoDeporte.GetComponent<FillCircleOverTime>();
+        DateTime currentDate = DateTime.Today;
+        formattedDate = currentDate.ToString("yyyy-MM-dd");
     }
     public void SwitchScreen()
     {
@@ -26,6 +36,7 @@ public class SwtichScreens : MonoBehaviour
         segundaScreen.SetActive(true);
         FillCircleOverTime.timer = tiempoFinal;
         FillCircleOverTime.coolingDown = true;
+        dbManagerScript.SendEjercicio(textDeporte.text, tiempoFinal.ToString(), formattedDate, "4");
 
 
     }
