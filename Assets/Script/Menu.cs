@@ -6,12 +6,14 @@ using UnityEngine.UI;
 
 public class Menu : MonoBehaviour
 {
+    public Button returnmenu;
 
     void Start()
     {
+        returnmenu.onClick.AddListener(Return);
     }
 
-    public void Return()
+    void Return()
     {
         SceneManager.LoadScene("Menu");
     }

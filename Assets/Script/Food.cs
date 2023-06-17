@@ -54,7 +54,7 @@ public class Food : MonoBehaviour
 
     private bool hasReducedLevels = false;
 
-    readonly string postURL = "http://localhost:8090/api/comida/guardar";
+    readonly string postURL = "http://localhost:5500/api/comida/guardar";
 
     private void Start()
     {
